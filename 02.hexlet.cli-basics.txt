@@ -1,0 +1,769 @@
+// конспект по курсу СLI на hexlet.io
+// проходил в июле 2022
+// в какой-то момент перешел на английский, ибо словарный запас со словарем позволяет, а практика английского лишней не бывает
+
+				hexlet.cli-basics.01	Introduction
+CLI - Command Line Interface
+GUI - Graphical User Interface
+
+				hexlet.cli-basics.02	Operating systems
+UNICS - Uniplexed Information and Computing Service - ОС для мейнфреймов с 70-х
+UNIX - измененное название UNICS
+POSIX - Portable Operating System Interface for UNIX - стандарт написания интерфейсов для UNIX-подобных мэйнфреймов. Ныне семейство стандартов, описывающих взаимодействие основных компонентов ОС
+Linux - ядро ОС от студента Линуса Торвалдса и компании энтузиастов, совместимая со стандартом POSIX
+GNU (рекурсивный акроним — GNU’s Not UNIX) - проект развития свободного ПО, использующего соответствующие POSIX системные вызовы, основанный Ричардом Столманом, включавший:
+ - Emacs - текстовый редактор,
+ - gcc (GNU Compiler Collection) - набор компиляторов GNU - компилятор языка Си,
+ - bash (bourne again shell или возрождённый снова shell) - командная оболочка - модернизированная вариация Bourne shell (Bourne - фамилия)
+ - libc - библиотека важнейших функций для программ на Си
+WSL - Windows Subsystem for Linux - позволяет прямо в винде работать с командной строкой, файловой системой, GUI приложениями для Linux
+
+				hexlet.cli-basics.03	Command line
+shell - командная оболочка (командный интерпретатор, командный процессор)
+Терминал — программа, которая запускает командную оболочку внутри себя
+Скрипт (сценарий) - набор команд bash, упакованный в файл
+Командную оболочку иногда называют REPL-ом
+REPL (Read-Eval-Print-Loop) - интерактивная сессия взаимодействия с пользователем
+ - Read — шелл ждёт ввода команды от пользователя
+ - Eval — шелл исполняет введённую команду
+ - Print — шелл выводит результат
+ - Loop — возвращаемся к первому пункту
+
+				hexlet.cli-basics.04	Navigation
+/   - корневой каталог в UNIX-системах
+Команды bash:
+pwd - print working directory
+ls  - list directory contents
+cd  - change directory 
+cd dirName   - переход в каталог dirName
+cd Dir\ Name - пробелы в названиях экранируем обратным слешем
+cd /Users/guest - переход в каталог по абсолютному пути
+cd Users/guest - переход в каталог по относительеному пути (относительно текущего каталога)
+.. - означает директорию уровнем выше
+cd .. - переход в директорию уровнем выше
+ls .. - состав директории уровнем выше 
+cd ../.. - переход в директорию на два уровня выше
+. - означает текущую директорию
+cd ./music (эквивалентно cd music) - переход в директорию music, размещенную в текущей директории
+cd ../docs - переход в директорию docs, размещенную в той же директории, где мы находимся сейчас
+cd - (без аргументов) пробрасывает в корневую директорию текущего пользователя
+~ - синоним корневой директории текущего пользователя
+cd ~/Music - пробрасывает в директорию Music, в корневом каталоге текущего пользователя
+cd - - возвращает в предыдущую директорию. То есть, последовательный вызов этой команды переключает между двумя последними посещёнными директориями
+Tab (клавиша) - автокомплит
+Double Tab - тоже автокомплит (различие не уразумел) - в zsh не отрабатывает
+
+				hexlet.cli-basics.05	Command line interface
+Аргумент указывается сразу после команды
+Опция указывается после дефиса
+ls -a - состав директории, включая скрытые файлы 
+ls -l - выводит дополнительную информацию по каждому файлу
+ls -S - сортирует по размеру перед выводом
+ls -la (тоже что ls -al, то же что ls -a -l) - команда с двумя ключами 
+Аргументы указываются после опций
+ls -l music - отобразит содержимое директории music с дополнительной информацией
+man <имя команды> - отобразит мануал по интересующей команде
+ q - quit
+ f - forward
+ b - backward
+https://explainshell.com/ - подробное описание любой команды shell
+Многие опции имеют две формы записи:
+ - короткую (дефис и одна буква) для набора в терминале,
+ - длинную (два дефиса и слово, отражающее суть опции) для удобочитаемости скриптов в дальнейшем
+
+в MacOS командой say можно вызвать синтезатор речи
+say hello - произнесет hello
+Если в параметре есть пробелы или спецсимволы, то необходимо использовать кавычки (двойные или одинарные)
+say "Hello, World"
+say -o hi.aac 'Hello, World' (с ключом -о) - положит аудио в файл
+Вместо -о можно использовать полную запись опции --output-file
+say -v Alex -o hi -f hello_world.txt - прочитает
+= - используется вместо пробелов для параметров некоторых команд
+В разделе SYNOPSYS документации say наблюдаем:
+say [-v voice] [-r rate] [-o outfile [audio format options] | -n name:port | -a device] [-f file | string ...]
+[] - указывают на необязательность параметра
+|  - или (исключающее) - или одно или другое, но не одновременно
+
+				hexlet.cli-basics.06	File structure
+Файловая структура *nix-систем представляет собой дерево, в узлах которого находятся директории (файлы специального типа), а в листьях — файлы
+Понятие "папка" в *nix-системах не используется, говорят "директория" или "каталог", хотя по существу эти термины означают одно и то же
+В *nix-системах — единственное дерево с корнем в /. Все устройства, физические и логические диски находятся внутри этого дерева в виде директорий и файлов.
+Информация о любом файле или директории доступна по команде stat (file system status):
+*nix-системы чувствительны к регистру имен файлов и каталогов
+MacOS и Windows - не чувствительны
+FHS (Filesystem Hierarchy Standard) - стандарт иерархии файловой системы Linux:
+/etc  - содержит конфигурацию программ в обычных текстовых файлах
+/home - содержит домашние директории пользователей системы (кроме root-а)
+/root - домашняя директория пользователя root
+/etc/passwd - файл с базой всех пользователей системы
+MacOS X использует другие каталоги:
+/Library/, /Applications/, /Users/ вместе с традиционными именами UNIX-иерархии
+Все файлы и директории, начинающиеся с точки, считаются скрытыми
+Нестандартные файлы:
+ - Hard Link — дополнительное имя для уже существующего файла.
+ - Symbolic link — символическая ссылка, такой файл похож на ярлык в Windows. Если удалить основной файл, то символическая ссылка начнёт вести в никуда.
+ - Socket — специальный файл, через который происходит взаимодействие между разными процессами операционной системы. Программисты постоянно сталкиваются с сокетами в реальной жизни.
+
+				hexlet.cli-basics.07	Reading files
+cat  <fileName> - выводит в консоль содержимое файла целиком
+head <fileName> - выводит в консоль первые 10 строк файла
+tail <fileName> - выводит в консоль последник 10 строк файла
+ -n 4 - применительно к head или tail - покажет 4 строки (первые или последние)
+Пример: head -n 2 fileName.txt - покажет первые две строки файла
+tail -f - непрерывно выводит в консоль все добавляющиеся внизу строки (полезно при наблюдении логов)
+ -f - применяет захват файла.
+Для высвобождения захвата используется Ctrl + C
+Пейджеры - программы только для просмотра файлов (не для изменений)
+sudo - precomand to open files as superuser
+less - one of pagers 
+	f - forward
+	b - back
+	q - quit
+	/ - looking
+		n - go to next entrance
+		N - go to previous entrance
+//man opens manuals in less
+
+				hexlet.cli-basics.08	grep
+grep (global regular expression print) - a text searching in files (like searching errors in logs)
+SYNOPSIS
+	grep [OPTIONS] PATTERN [FILE...]
+    grep [OPTIONS] [-e PATTERN]...  [-f FILE]...  [FILE...]
+  PATTERN — is what is being searched for, it doesn't necessarily have to be a specific string, it can be a specific pattern (see regular expressions)
+  FILE — the path to the file to search in
+  -B, --before-context - outputs number of lines above
+  -A, --after_context  - outputs number of lines after
+  -C, --context        - outputs number of lines around
+  -r - recursively searching in every file of current directory and every subdirectories
+  -n - adds a line number
+  
+				hexlet.cli-basics.09	Editing files
+Nano - a very simple text editor, similar to Notepad
+Vim (Vi Improved)
+ - Command mode (normal mode) is the default mode.
+	This mode is for moving around the file, quick editing
+	(with commands and keyboard shortcuts), deleting, and text searching.
+ - Insert mode (input mode) - for text input from a keyboard.
+	The way you're probably used to doing it in normal editors.
+ - Visual mode - highlights chosen parts of the text.
+ - Command Line Mode is its own command line for the text editor,
+	which you can use to execute a wide variety of commands.
+
+				hexlet.cli-basics.10	Streams
+	- STDIN (Standard Input)
+ls -la > output - put file list to file "output" in work directory (it erase previous data in "output")
+ls -la >> output - make the same, but not erase data, opposite - add it in tail of file
+cat output - show us the result of previous moving in shell
+> - called Thread redirection
+This redirection works with absolutely any command that outputs results to the console, for example:
+  grep alias .bash_profile > result
+  echo 'hi' > result
+  
+	- STDOUT (Standard Output)
+wc (word count) - counts words in input stream
+wc -l - counts lines
+wc -l < result - counts lines in result and puts it into console
+wc -l < result > output - puts count of lines in "result" file to "output" file
+
+	- STDERR (Standard Error)
+	
+In Unix, each thread has a number, which is a file descriptor for input and output threads.
+The standard I/O streams: STDIN - 0, STDOUT - 1, STDERR - 2
+ls noDir > output 2>&1 - redirects STDERR thread to STDOUT thread, which forwards it to "output" file
+cd noDir 2> output - redirects 2-nd thread to a file
+cd noDir &> output - redirects all threads to a file
+
+				hexlet.cli-basics.11	Pipeline
+| (pipe) - point to shell to put STDOUT of first process to STDIN of second one
+Examples:
+	grep alias fileName | grep color - grep file by "alias", then pass it's output to grep by "color"
+	cat fileName | grep alias | grep color - do the same
+	cat fileName | grep alias | uniq | sort - grep file by alias, then clean from duplicates, then sort
+Pipeline became the basic of Unix philisophy:
+	- write programms doing somthing one and doing it perfectly
+	- write programms, that work together
+	- write programms, that support text threads (it's universe interface)
+cat languages | sort | head -n 2 - sorts strings in file "languages", then sends the first two lines to the shell
+
+				hexlet.cli-basics.12	File management
+touch fileName - changes the last time file access (or creates file if it's absent)
+rm fileName - removes file
+mv fileName1 fileName2 - moves fileName1 to fileName2 (moves files as name changing)
+cp fileName1 fileName2 - copys fileName1 to fileName2
+cp -r dirName1 dirName2 - copys dirName1 to dirName2 (-r - recursive - copys with subdirectories)
+mkdir dirName - make a directory "dirName"
+mkdir -p one/two/three - make directory with subdirectories by one command
+rm fileName - removes file (can't remove directories)
+rm -r dirName - (-r - recursive) removes a directory with all content (except read-only - will ask about every read-only file and directory)
+rm -rf dirName - removes a directory with all content without quastions (-f - --force)
+
+				hexlet.cli-basics.13	Environment variables
+env (environment) - show environment variables
+echo $HOME - show home directory path
+HOME=/tmp - change HOME-value before the end of session // or until the next HOME assignment
+HOME=/tmp cd - change HOME-value until the next call to cd
+export HOME=/tmp - extends the scope to child shells as well
+MYVAR=1729 - defines myVar as local variable
+export MYVAR=1729 - defines myVar as environment variable
+export -f MYFUNC - extends the function scope to child shells as well
+	$ MYFUNC(){
+	> echo hi
+	> }
+	$ export -f MYFUNC  # extends the function scope
+	$ bash
+	$ MYFUNC
+	hi
+	$ exit
+	$ export -n MYFUNC  # limits the function scope
+export -p - display all imported into current shell environment variables and functions
+Exporting variable froma a child shell:
+	$ echo "MYVAR=1729" > myscript.sh	# injecting variable to a child shell
+	$ source myscript.sh				# geting variables from a child shell
+	$ echo $MYVAR
+	1729
+
+				hexlet.cli-basics.14	History
+~/.bash_history - keeps all user assertions
+HISTFILESIZE - keeps number of saving assertions
+history - shows assertions from current session
+history 5 - shows last 5 assertions
+!3 - run assert number 2 in assertion history
+history | grep export - greps history by "export"
+Ctrl+r - recursive seaching
+
+				hexlet.cli-basics.15	Users and groups
+/ets/passwd - keeps info about each iser
+whoami - show who am i (login in OS)
+id - show UID of current user
+ps (process status) - report on processes of current user and shell
+ps aux - report on user-starters of processes
+ps -e - print all the processes within the system
+ps -f - more detailed output
+ps -u root - search by the user name
+root - user with id = 0
+https://www.baeldung.com/linux/ps-command
+
+				hexlet.cli-basics.16	sudo
+su (substitute user, switch user) 	- archaic way to run smth by another user
+sudo (substitute user and do) 		- upgrade privileges to superuser
+	Example: 	sudo touch /ets/myfile 	- changes last access time from superuser
+sudo -u
+	Example: 	sudo -u nobody mkdir /tmp/mydir - makes file from nobody user
+sudo -i - run new shell to superuser
+exit - exit from shell
+echo "Hello, World!" | sudo tee config/myfile - make a new file in root accessed directory and put in it
+
+				hexlet.cli-basics.17	Access permirtion
+ls -la /someDirectoryOrFile will cause smth like this...
+	-rw-r--r-- 1 kirill.m kirill.m 3771 Aug 31  2015 .bashrc
+or	drwxr-xr-x  5 kirill.m kirill.m 4096 Aug 29 11:34 kirill.m
+where...
+	first char = - - file
+				 d - directory
+	2-4, 5-7, 8-10 groups mean r - read
+							   w - write
+							   x - execute
+	2-4 - for Owner
+	5-7 - for Groupemates of owner
+	8-10- for Others
+Permissions to create and delete files and directories are determined by permissions to write in directory
+x (for directory) - permit access to directories content
+There is another form of permition writing: d755 = d111101101 = drwxr-xr-x, -644 = -rw-r--r--
+Root is outside of this system and can do everything
+chmod (change mode) - command to change access permitions
+	SYNOPSIS:
+		chmod [options] mode[,mode] file1 [file2 ...]
+	OPTIONS:
+		-R - recursive change of access permitions to all files and subdirectories
+		-f - don`t show change access permiton errors
+		-v - show change access permitions process in detail
+	EXAMPLES:
+		chmod 755 filename
+		chmod rwxr-xr-x filename
+https://ru.wikipedia.org/wiki/Chmod
+
+				hexlet.cli-basics.18	Package manager
+EXEMPLE:
+sudo apt install php
+	sudo - permits access to system directories (run comand from superuser)
+	apt (Advanced Package Tool) - console utility - user text interface - in package manager
+	install - command from apt
+	php - example of package to install
+apt remove php - removes php package
+index - list of packages - local copy saved local
+sudo apt update - updates local index
+
+There are package managers for each program language:
+	Node.js	- npm
+	PHP 	— Composer
+	Ruby 	— RubyGems
+	Python 	— pip
+
+				hexlet.cli-basics.19	Executing a program
+type myprogram					- shows where program is
+which myprogram					- shows where program is
+whereis myprogram				- shows where program is
+ls -al /bin | grep myprogram 	- shows program deteiling
+Path to all programs is in $PATH
+To run program from other directory we must runn it with full path:
+	/path/to/executable/file
+	./executable				#execute file from current directory
+$PATH saved in .bashrc, .bash_profile, .profile and may be corrected there...
+	export PATH=$PATH:/path/to/directory	#adds new path to executed files
+
+
+https://white55.ru/cmdmain.html.  :
+Перечень наиболее часто используемых команд Linux.
+
+В разных дистрибутивах и в зависимости от версии программного обеспечения синтаксис команд может отличаться. Приведенный перечень содержит наиболее часто применяемые команды, сгруппированные по назначению и области применения.
+
+
+Команды для работы с файлами и каталогами
+
+
+Файловые команды
+
+ls – список файлов и каталогов
+
+ls –l - форматированный список файлов и каталогов с атрибутами, владельцем, датой создания
+
+ls -al – форматированный список, включая скрытые каталоги и файлы
+
+cd dir – сменить директорию на dir
+
+cd ~ – сменить на домашний каталог
+
+cd .. - перейти в каталог уровнем выше.
+
+pwd – показать текущий каталог
+
+mkdir dir – создать каталог dir
+
+rm file – удалить file
+
+rm -r dir – удалить каталог dir
+
+rm -f file – удалить файл без запросов подтверждения и игнорировать ошибки file
+
+rm -rf dir – удалить каталог dir без запросов подтверждения и игнорировать ошибки
+
+cp file1 file2 – скопировать file1 в file2
+
+cp -r dir1 dir2 – скопировать dir1 в dir2; создаст каталог dir2, если он не существует
+
+mv file1 file2 – переименовать или переместить file1 в file2. если file2 существующий каталог – переместить file1 в каталог file2
+
+ln -s file link – создать символическую ссылку link к файлу file
+
+touch file – создать file, если файл существует – изменить отметки времени файла.
+
+cat > file – направить стандартный ввод в file
+
+more file – вывести содержимое файла file в постраничном режиме
+
+head file – вывести первые 10 строк указанного файла.
+
+tail file – вывести последние 10 строк указанного файла
+
+tail –n 100 /var/log/messages - отобразить последние 100 строк из файла журнала /var/log/messages.
+
+tail -f file - выводить содержимое файла по мере его роста.
+
+Права доступа:
+
+chmod octal file – сменить права file на octal, раздельно для пользователя, группы и для всех добавлением:
+
+4 – чтение (r)
+2 – запись (w)
+1 – исполнение (x)
+Примеры:
+
+chmod 777 iptraf – чтение, запись, исполнение любым пользователям для файла iptraf
+chmod 755 – rwx для владельца, rx для группы и остальных.
+
+Команды для работы с процессами
+
+
+Управление процессами
+
+ps – вывести ваши текущие активные процессы
+
+ps –e - вывести список процессов с идентификаторами ( PID ) и их именами
+
+ps –eF - вывести список процессов, как в предыдущем примере, но с полной строкой запуска
+
+ps –aux - как и в предыдущем примере, но с использованием синтаксиса BSD.
+
+top – показать степень использования ресурсов системы.
+
+nice - отобразить текущее значение модификации приоритета nice Модификатор принимает значения от -20 (высокий приоритет) до 19 (низкий)
+
+nice -4 mc - запустить mc с приоритетом +4 по отношению к родительскому процессу (оболочке пользователя).
+
+nice --4 mc - запустить приложение mc с приоритетом -4 по отношению к родительскому процессу (оболочке пользователя).
+
+renice 4 -p 11590 - установить значение приоритета для процесса с идентификатором PID=11590 равное 4
+
+kill pid – завершить (убить) процесс с идентификатором pid
+
+killall proc – убить все процессы, имена которых начинаются с proc
+
+bg – список остановленных и фоновых задач; продолжить выполнение остановленной задачи в фоне
+
+fg – выносит на передний план последние задачи
+
+fg n – вынести задачу n на передний план
+
+Команды для архивирования
+
+
+tar cf file.tar files – создать tar-архив с именем file.tar содержащий files
+
+tar xf file.tar – распаковать file.tar
+
+tar czf file.tar.gz files – создать архив tar с сжатием Gzip
+
+tar xzf file.tar.gz – распаковать tar с Gzip
+
+tar cjf file.tar.bz2 – создать архив tar с сжатием Bzip2
+
+tar xjf file.tar.bz2 – распаковать tar с Bzip2
+
+gzip file – сжать file и переименовать в file.gz
+
+gzip -d file.gz - распаковать file.gz в file
+
+Дополнительно - Использование архиватора tar для архивирования данных.
+
+Команды для поиска
+
+
+grep pattern files – искать pattern в файлах files
+
+grep 192.168.1.1 /etc/*.conf - искать IP – адрес 192.168.1.1 в конфигурационных файлах каталога /etc
+
+grep –r 192.168. /etc/*.conf - искать часть IP – адреса 192.168. в конфигурационных файлах каталога /etc и его подкаталогах (рекурсивно)
+
+command | grep pattern – искать pattern в выводе команды command
+
+locate file – найти все файлы с именем file. Например, для определения места хранения пакетов .deb – locate *.deb
+
+whereis mc – где находятся файлы с именем mc
+
+which iptraf – где находится исполняемый модуль iptraf, запускаемый по умолчанию (без указания пути).
+
+find / -name iptables* - искать, начиная с корневого каталога, файлы, имена которых начинаются с iptables.
+
+find /etc -name iptables* - искать в каталоге /etc файлы, имена которых начинаются с iptables.
+
+Команды для получения сведений о системе, активности пользователей .
+
+
+date – вывести текущую дату и время
+
+cal – вывести календарь на текущий месяц
+
+uptime – показать время с момента последней загрузки ОС.
+
+w – сведения о пользователях, зарегистрировавшихся в системе
+
+users - список имен пользователей, вошедших в систему.
+
+last - список пользователей, вошедших в систему по данным из специального файла /var/log/wtmp. Отображается имя, терминал, время входа IP-адрес и т.п.
+
+last –ad - сведения о пользователях, вошедших в систему, с отображением в последней колонке имени компьютера с которого выполнен вход.
+
+last –F - отобразить время входа пользователей в систему, длительность сессий и время выхода.
+
+last –x - отобразить сведения о выключениях, перезагрузках и изменениях уровня запуска системы.
+
+last root - отобразить сведения о сеансах пользователя root.
+
+last -n 10 user1 - отобразить сведения о десяти последних сеансах пользователя user1.
+
+lastlog - отобразить список всех пользователей и время их последнего входа в систему.
+
+whoami – имя, под которым вы в данный момент работаете в системе.
+
+finger user – показать информацию о user
+
+uname -a – отобразить все сведения о системе.
+
+uname -vr – отобразить номер выпуска операционной системы и версию ядра.
+
+df – отобразить информацию об использовании дисков.
+
+du – отобразить информацию об использовании текущего каталога
+
+free – информация об использовании реальной и виртуальной памяти.
+
+whatis app - отобразить краткую информацию об app из базы данных документации.
+
+whereis app – где находится исполняемый модуль app
+
+which app – какой исполняемый модуль приложения app будет запущен по умолчанию.
+
+man command – отобразить справочную информацию для команды command
+
+Команды для управления пользователями и группами.
+
+
+groupadd -g 500 user - создать группу user с идентификатором GID=500
+
+useradd -p PASS user - создать пользователя user с паролем PASS
+
+passwd - изменить пароль текущего пользователя.
+
+passwd user - изменить пароль пользователя user (команда только для root)
+
+su - user - выполнить смену текущего пользоателя на пользователя user с использованием его оболочки (-).
+
+su - - сменить текущего пользователя на суперпользователя root с использованием его командной оболочки.
+
+sudo shutdown now - выполнить команду shutdown now с правами суперпользователя root
+
+script /var/log/mysession.txt - создать протокол действий пользователя с записью вводимых команд и отображаемых результатов в файл /var/log/mysession.txt. Для прекращения записи введите команду exit
+
+Дополнительно - Подробное описание команды sudo с примерами настроек в /etc/sudoers
+
+Команды для получения сведений об оборудовании
+
+
+Некоторые сведения об оборудовании можно получить из файлов каталога /proc:
+
+cat /proc/devices - информация о типах устройств.
+
+cat /proc/diskstats - информация о дисковых устройствах.
+
+cat /proc/dma - информация о режиме работы контроллера прямого доступа к памяти.
+
+cat /proc/iomem - информация об адресах, используемых контроллерами ввода-вывода.
+
+cat /proc/ioports - информация о портах ввода-вывода.
+
+cat /proc/meminfo - информация об оперативной памяти.
+
+cat /proc/cpuinfo - информация о процессорах..
+
+lshw - отобразить полную информацию об оборудовании в текстовом формате.
+
+lshw -c storage - отобразить информацию об устройствах хранения данных ( класса ”storage” )
+
+lscpu - отобразить информацию о процессоре
+
+lscpu | grep L2 - получить размер кэш второго уровня процессора.
+
+lscpu | grep Arch - получить информацию об архитектуре процессора.
+
+lspci - отобразить сведения об оборудовании на шине PCI
+
+lsusb- отобразить сведения об оборудовании на шине USB
+
+dmidecode отобразить версию программы, общую информация базы DMI, и расшифрованное содержимое отдельных записей.
+
+dmidecode -t bios - сведения о BIOS
+
+dmidecode -t system - сведения о переключателях системной платы.
+
+dmidecode -t baseboard - сведения о материнской плате.
+
+dmidecode -t chassis - сведения о переключателях и датчиках шасси.
+
+dmidecode -t processor - сведения о центральном процессоре ( о процессорах для многопроцессорных систем ) .
+
+dmidecode -t memory - сведения об оперативной памяти.
+
+dmidecode -t cache - сведения о кэш-памяти.
+
+dmidecode -t connector - сведения о разъемах контроллеров периферийных устройств.
+
+dmidecode -t slot - сведения о разъемах PCI/PCI-Express
+
+Дополнительно - Получение информации об оборудовании в командной строке Linux.
+
+Команды для работы с сетью
+
+
+ifconfig - отобразить сведения о конфигурации сетевых интерфейсов.
+
+ifconfig -a - отобразить сведения о конфигурации сетевых интерфейсов, в том числи и отключенных..
+
+ifconfig eth0 - отобразить сведения о конфигурации сетевого интерфейса eth0
+
+ifсonfig –s - отобразить список сетевых интерфейсов.
+
+ifconfig eth0 hw ether 00:11:22:33:44:55 - установить новое значение аппаратного адреса (MAC-адреса) для сетевого интерфейса eth0
+
+ifconfig eth1 broadcast 192.168.1.255 - установить значение широковещательного адреса для интерфейса eth1
+
+ifconfig eth1 netmask 255.255.255.0 - установить маску подсети для интерфейса eth1
+
+ifconfig eth1 192.168.1.1 - установить IP-адрес для интерфейса eth1
+
+ifconfig eth1 add 192.168.1.2 - добавить IP-адрес для интерфейса eth1
+
+ifconfig eth0 down - отключить интерфейс eth0
+
+ifconfig eth0 up - включить интерфейс eth0
+
+Команда ifconfig считается устаревшей и постепенно вытесняется командой ip
+
+ip addr show - отобразить список сетевых интерфейсов с адресами. Возможно сокращение параметров команды - ip a sh или ip a s
+
+ip addr list permanent - отобразить только статические ip адреса
+
+ip addr list dynamic - отобразить только динамические ip адреса
+
+ip addr add 1.1.1.13/24 dev eth0 - установить ip адрес для интерфейса eth0
+
+ip addr del 1.1.1.13/24 dev eth0 - удалить ip адрес интерфейса eth0
+
+ip addr flush dev eth0 - удалить все ip адреса интерфейса eth0
+
+ip addr help - отобразить справку по команде ip addr
+
+ip route show - отобразить сведения о маршрутах. В сокращенном варианте - ip r s
+
+ip route show table 255 - отобразить все маршруты из таблицы 255 ip route get 10.10.20.0/24 - отобразить маршрут к этой сети ip route get 10.10.20.0/24 from 192.168.1.100 - отобразить маршрут к этой сети от указного интерфейса с IP=192.168.1.100.
+
+ip route add 10.10.20.0/24 via 192.168.5.1 - создать маршрут к заданной сети через интерфейс c IP=192.168.5.1
+
+ip route delete 10.10.20.0/24 - удалить указанный маршрут.
+
+ip route del 10.10.20.0/24 via 192.168.50.100 - удалить указанный маршрут.
+
+ip route add default via 192.168.50.100 - создать маршрут по умолчанию.
+
+ip route add 10.10.20.0/24 dev eth0 - создать маршрут к указной сети .
+
+ip route add table nnn 10.10.20.0/24 dev eth0 - создать маршрут в специальной таблице маршрутов с номером nnn.
+
+ip route add to blackhole 10.10.0.0/16- создать фиктивный маршрут.
+
+ip route add unreachable 10.10.0.0/16 - создать недостижимый маршрут.
+
+ip link show - отобразить список сетевых интерфейсов.
+
+ip link show eth0 - отобразить состояние eth0
+
+ip link list up - отобразить статус всех включенных интерфейсов
+
+ip link set eth1 up - включить интерфейс eth1
+
+ip link set eth1 down - выключить интерфейс eth1
+
+nslookup - запуск nslookup в интерактивном режиме.
+
+nslookup mail.ru - отобразить сведения для домена mail.ru с использованием сервера DNS из сетевых настроек.
+
+nslookup mail.ru 8.8.8.8 - отобразить сведения для домена mail.ru с использованием сервера DNS с адресом 8.8.8.8 (публичный DNS-сервер Google).
+
+nslookup –query=mx mail.ru - отобразить запись типа MX для домена mail.ru.
+
+Альтернативой команде nslookup является команда dig
+
+dig yandex.ru – получить DNS информацию о домене yandex.ru с использованием DNS-сервера по умолчанию
+
+dig @8.8.8.8 yandex.ru – получить DNS информацию о домене yandex.ru с использованием DNS-сервера 8.8.8.8
+
+dig -x ya.ru – отобразить реверсивную запись для узла ya.ru
+
+whois domain - получить информацию whois для domain
+
+wget file – скачать file
+
+wget -c file – продолжить остановленную закачку
+
+ping –help - отобразить справку по использованию ping ping host - пинговать host. Для завершения нажать Ctrl+C
+
+ping –c 10 host - пинговать 10 раз host.и завершиться
+
+ping –c 1 –s 3000 ya.ru - пинговать 1 раз узел ya.ru с отправкой пакетов длиной 3000 байт.
+
+ping –c 10 host - пинговать 10 раз host.и завершиться
+
+ping –c 1 –s 3000 –t 3 ya.ru - пинговать 1 раз узел ya.ru с отправкой пакетов длиной 3000 байт. И с использованием TTL=3
+
+tcpdump –I eth0 - отображать в сокращенном виде содержимое пакетов на сетевом интерфейсе ith0
+
+tcpdump –vv –I eth1 - отображать в подробном виде содержимое пакетов на сетевом интерфейсе eth1
+
+netstat - отобразить список текущих соединений.
+
+netstat -nap - отобразить список соединений и слушаемых портов (a) в числовом виде (n) и с именами программ (p)
+
+netstat –r - отобразить таблицу маршрутизации.
+
+netstat –s - отобразить сетевую статистику.
+
+traceroute ya.ru - выполнить трассировку к узлу ya.ru
+
+traceroute 8.8.8.8 - выполнить трассировку к узлу с IP-адресом 8.8.8.8
+
+Команды для работы с SSH
+
+
+ssh user@host – подключится к узлу host как пользователь user
+
+ssh –l admin 192.168.1.1 – подключится к узлу 192.168.1.1 как пользователь admin
+
+ssh -p port user@host – подключится к узлу host на порт port как пользователь user
+
+ssh-keygen - сгенерировать публичный и приватный ключ для текущего пользователя.
+
+ssh-copy-id user@host – добавить публичный ключ, сгенерированный для пользователя user на узел host. Текущим каталогом должен быть подкаталог с файлом ключа. Применяется для доступа к удаленной системе по ключу (без пароля).
+
+ssh -X -l user 192.168.0.1- подключиться к удаленному компьютеру 192.168.0.1 как пользователь user с использованием перенаправления графического вывода (X11 Forwarding)
+
+ssh -Y -l user 192.168.0.1- то же, что и в предыдущем примере, но без возможности взаимодействия удаленного клиента с локальным графическим дисплеем системы, к которой выполняется подключение. BR>
+ssh -X -l user 192.168.0.1 ‘xterm’ - подключиться к удаленному компьютеру 192.168.0.1 как пользователь user с использованием перенаправления графического вывода (X11 Forwarding) и запуском графического терминала xterm.
+
+exit – выйти из командной оболочки SSH.
+
+Команды для установки ПО.
+
+
+Установка из исходников:
+
+./configure
+Make
+make install
+
+Установка программ для различных дистрибутивов linux:
+
+apt-get install iptraf - установить приложение iptraf из репозитория (Debian, Ubuntu и их ответвления.
+
+apt-get remove iptraf mc - удалить приложения iptraf и mc
+
+apt-get purge iptraf mc - удалить приложения iptraf и mc и их служебные и конфигурационные данные.
+
+dpkg -i pkg.deb – установить приложение из пакета .deb (Debian, Ubuntu и их ответвления).
+
+dpkg –r package - удалить пакет package. Удаление не полное - конфигурационные файлы, служебные сценарии, файлы журналов, данные, используемые этим пакетом, останутся. Это позволяет переустановить пакет с использованием существующей конфигурации.
+
+dpkg –P package - как и в предыдущем примере, но с полным удалением конфигурации и служебных данных.
+
+rpm –ivh packag1.rpm packagr2.rpm - установить приложения из указанных пакетов .rpm (Red Hat, Fedora, Centos и их ответвления)
+
+rpm -Uvh foo-1.0-1.i386.rpm – обновить приложение из пакета .rpm
+
+rpm –e ipraf - удалить приложение iptraf
+
+Сочетания клавиш
+
+
+Клавиатурные сочетания Ctrl+C – завершить текущую команду
+
+Ctrl+Z – остановить текущую команду, продолжть с fg на переднем плане или bg в фоне
+
+Ctrl+D – выйти из оболочки пользователя, тоже самое, что и exit
+
+Ctrl+W – удалить одно слово в текущей строке
+
+Ctrl+U – удалить строку
+
+!! - повторить последнюю команду
+
+Ctrl+Shift+F1 … CTrl+Shift+F6 - переключаться между терминалами 1 … 6
+
+

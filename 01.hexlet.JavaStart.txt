@@ -1,0 +1,89 @@
+// это конспект для личного использования
+// начал записи с момента появления новой или не понятной для меня информации (ранее уже листал книжки по Java и проломал что-то по мелочи)
+
+defaults write com.apple.TextEdit "TabWidth" '4'
+
+						// hexlet - java start 24
+import org.apache.commons.lang3.StringUtils; - добавляет либу для работы со строками без retunNullException
+Character.isUpperCase('X') – проверяет, находится ли символ в верхнем регистре
+StringUtils.reverse("str") из библиотеки Apache Commons Lang – выполняет переворот строки
+
+//Реализуйте метод convertString(), который принимает на вход строку и, если первая буква не заглавная, возвращает перевернутый вариант исходной строки. Если первая буква заглавная, то строка возвращается без изменений. Если на вход передана пустая строка, метод должен вернуть пустую строку.
+	public static String convertString(String text) {
+        if (text.length() == 0) return text;
+        return Character.isUpperCase(text.charAt(0)) ? text : StringUtils.reverse(text);
+    }
+	
+						// hexlet - java start 25
+Реализуйте метод getNumberExplanation(), который принимает на вход число и возвращает строку – объяснение этого числа. Если для числа нет объяснения, то возвращается null:
+//решим через оператор switch, как на hexlet:
+	public static String getNumberExplanation(int number) {
+	    switch (number) {
+	        case 666: return "devil number";
+	        case 42:  return "answer for everything";
+	        case 7:   return "prime number";
+	    }
+	    return null;
+	}
+//альтернативное решение, возможно с Java 12. Через выражение (а не оператор) Switch (подсмотрено на хабре):
+    public static String getNumberExplanation(int number) {
+        return switch (number) {
+            case 666 -> "devil number";
+            case 42  -> "answer for everything";
+            case 7   -> "prime number";
+            //default  -> null; //можем не указывать, так как выражение и так вернет null, не найдя правильного кейса
+        };
+    }
+
+						// hexlet - java start 26
+Цикл while
+while(предикат) {действие}
+
+						// hexlet - java start 27
+нейтральный элемент бинарной операции - элемент, при котором результат равен другому элементу
+агрегация - операция на основе всех элементов
+
+						// hexlet - java start 28
+Character.toLowerCase('C') – переводит символ в нижний регистр
+"str".toLowerCase() - возвращает строку в нижнем регисте
+"str".charAt(2) - возвращает третий символ строки
+
+						// hexlet - java start 29
+for(int i = 0; i < 10; i++) {тело цикла}
+
+						// hexlet - java start 29
+пакеты
+пакеты именуются только строчными буквами, в единственном числе
+package src.level1.level2 - указывает логическое размещение описывемого класса, по-хорошему размещенного в каталоге src/level1/level2/
+import src.level1.level2.MyClass; //импортирует MyClass из пакета src.level1.level2, размещенного в каталоге src/level1/level2/
+после такой импортирующей строки мы обращаемся к классу по короткому имени MyClass
+без импорта к классу каждый раз необходимо обращаться по полному имени src.level1.level2.MyClass
+
+
+package io.hexlet;
+
+// BEGIN (write your solution here)
+import io.hexlet.counter.Counter;
+// END
+
+public class App {
+    // BEGIN (write your solution here)
+        public static boolean greaterThan(String str1, String str2) {
+            return (Counter.bigLettersCount(str1) > Counter.bigLettersCount(str2));
+        }
+    // END
+}
+
+public class Counter {
+    // BEGIN (write your solution here)
+    public static int bigLettersCount(String str) {
+        length = str.length();
+        int count = 0;
+        char ch;
+        for(int i = 0; i < length; i++)
+            if(str.charAt(i) == Character.toUpperCase(str.charAt(i)))
+                count++;
+        return count;
+    }
+    // END
+}

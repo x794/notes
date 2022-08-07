@@ -1,0 +1,197 @@
+				hexlet.git.01	Introduction
+				hexlet.git.02	Installation and thesettings
+SSH (Safety shell) - it`s not a shell - it`s a safe transport protocol
+Make ssh-keys couple:
+	open terminal
+		ssh-keygen -t ed25519  -C "your_email@example.com"	# makes a couple ssh-keys
+		eval "$(ssh-agent -s)"								# runs ssh agent to watch the keys
+		ssh-add ~/.ssh/id_ed25519 							# adds new ssh key to agent
+		cat ~/.ssh/id_ed25519.pub							# shows open key (we may take it here)
+	https://github.com/settings/keys						# open site
+		press 'New SSH key' button
+		insert copyed key and come up new key-name
+
+				hexlet.git.03	Work process
+git init					# run in working directory of project
+							# make a repository (in .git directory)
+							# contains all necessary to git
+git status					# show repository status (shows all commited files, only commited files)
+git add myFile				# prepares myFile to commit (adds myFile to index, marks myFile like staged)
+git commit -m 'comment'		# sand all prepared files to repository as one whole
+							# -m - cover message of current commit
+							# Every commit must be atomicity - implements only one task
+
+GIT-sheet: https://about.gitlab.com/images/press/git-cheat-sheet.pdf
+Соглашение о коммитах: https://www.conventionalcommits.org/ru/v1.0.0/
+Что такое Git... https://git-scm.com/book/ru/v2/%D0%92%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D0%A7%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-Git%3F
+
+				hexlet.git.04	Integration to Github
+		Manualy make an empty repository hexlet-git on github.com
+git remote					# show remote repository to current local one
+git remote -v				# show settings of remote to local repository binding
+git remote add origin <url>	# bind current local repository to remote one
+							# origin - new local name of remote repository
+git branch -M main			# rename current local branch to main
+git push -u origin main		# bind local current branch to remote main in origin and make push
+...finish!!!  Update our new repository on github.com
+
+		Make a copy of repository from github.com:
+rm -r hexlet-git			# remove local repository
+git clone <url>				# clone origin to local directory
+git pull --rebase			# synchronises server repository to local
+git log						# show git operations log
+
+Bitbucket - an alternative of github
+Git...... - an alternative of github that may be installed to local machine
+
+Task: copy git from repos/git-user to repos/git-user, change two files and push them to main git
+git clone repos/git-user code-user
+cd code-user/
+echo 'I like to change files' >> hexlet.txt
+echo '<h1>С помощью гит можно писать книги</h1>' > index.html
+git add .		# 
+git config --global user.email "you@example.com"	# set e-mail for git
+git config --global user.name "Your Name"			# set your name fog git
+git config --list									# show git settings
+git commit -m 'fix hexlet.txt and index.html'
+git push
+
+				hexlet.git.05	Working directory
+git restore myFile					# restores myFile to working directory from git,
+									# cansels non commited changes in myFile
+There are two ways to remove file from git:
+1.	rm myFile						# removes file from working directory
+	git add myFile					# marks myFile to tracking and fixes changes to commit
+
+2.	git rm myFile					# works like rm myFile + git add myFile (but not commit yet)
+
+-.	git commit -m 'remove myFile'	# commits all staged changes to current local git
+	git push						# pushes all commits to server git
+
+				hexlet.git.06	Analysis of changes
+git diff			# (--cached by default) shows all file changes in work directory compared to git
+					# changes are demonstrates in pager with it's own controlling:
+					# f (forward), b, u (back, up), q (quit), /text (looking text)... n (next)... N (previous)
+git diff --staged	# shows changes in files prepared to committing
+
+				hexlet.git.07	Analysis of commit history
+git log				# shows commit history (from commit in current HEAD to the root commit)
+git log -p			# shows commit history with diffs
+git show hashNumber	# shows the diff for hashNumber commit
+					# it`s enought to specify the first 7 characters of hashNumber
+git blame myFile	# shows the entire myFile with each line history
+git grep myWord		# shows every line in every file containing myWord
+git grep -i myWord						# the same, but not case sensitive
+git grep myWord hashNumber				# the same, but only in hashNumber commite
+git grep myWord $(git rev-list --all)	# shows full commit list with hashNumbers
+
+				hexlet.git.08	Canseling in working directory (before commit)
+git clean 					# remove all untracked not ignored files
+							# -f - force, second -f may be used while cleaning after copying from another git
+							# -n - not delete - only show what would be deleted
+							# -d – remove also directory
+							# -x - remove also ignored files
+							# -i - interactive cleaning
+git restore myFile 			# restores myFile to working directory ((is staged) ? from staged : from git)
+git restore --staged myFile # restores myFile from last commit to staged and cancels indexing of myFile
+
+				hexlet.git.09	Canseling after commits
+git revert <hash>			# makes new commit to HEAD canceling changes of the <hash> commit
+git reset <hash>			# (applicapable only for non pushed commit)
+							# set <hash> to HEAD branch
+							# sends changes of <hash> commit to working directory
+git reset --mixed <hash>	# --mixed - by default
+git reset --hard <hash>		# --hard - set <hash> to HEAD branch and delete all released commits
+
+				hexlet.git.10	Changing of last commit
+git commit --amend			# (applicapable only for non pushed commit) 
+							# used to add new staged changes to commit or to change comment
+							# under the hood it makes revert, then repeats last commit with the same comment
+git commit --amend --no-edit# adds new staged changes to last non pushed commit without opening comments
+
+				hexlet.git.11	Index
+git commit myFile			# commits specified files (only if they are tracked)
+git commit -a				# commits all changed tracked files
+git add .					# marks to track and stages all files in working directory
+git add -i					# (--interactive) flexible staging
+git add -p					# (--patch) helps to stage a part of changes in file
+git reset -p				# helps to cancel a part of previous commit
+git stash save -p			# makes a stage stash in files changes
+
+				hexlet.git.12	Moving through History
+git log --oneline			# show commits with hashes and comments
+git shortlog				# show commits with authors and comments
+git checkout hashNumber		# switch control into hashNumber time
+git checkout main			# back control into main branch
+git switch -				# back control into main branch
+git branch					# show all branches
+# $PS1 — Prompt Statement - define the view of prompt statement
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" - install OH MY ZSH with colored PS
+git log -p --oneline myfile	# help to find changes in myFile through commits
+git log --name-status myFile# help to find changes in myFile through commits
+
+				hexlet.git.13	Understanding git
+git log --graph				# show graph of commits
+git switch -c myBranch		# --create - create new branch myBranch and switch into
+git switch myBranch			# switch to branch myBranch
+git push origin myBranch	# push to branch myBranch
+https://learngitbranching.js.org/?locale=ru_RU		# Game about branches
+https://trunkbaseddevelopment.com/					# Trunk Based Development
+
+				hexlet.git.14	Gitignore
+.gitignore					# in hive directory - contains list of all files ignored by git
+	myFile or myDirectory	# ignore myFile or myDirectory in every directory
+	/myFile or /myDirectory # ignore myFile or myDirectory in specified directory
+	/db/*.sqlite3			# ignore all *.sqlite3 in /db
+	doc/**/*.txt			# ignore all *.txt in /doc and all inner directories
+git rm myFile --cached		# remove myFile from repositore, but not from working directory
+BIG Gitignore collection	# https://github.com/github/gitignore
+
+				hexlet.git.15	Stash
+git stash					# stash all tracked and indexed files
+git stash -u				# --include-untracked	- also stash untracked files
+git stash -a				# --all					- also stash ignored files
+git stash --patch			# ask to stash for each change
+git stash --list			# show all stashes
+git stash apply				# restore last stash to WD
+git stash apply stash@{2}	# restore stash@{2} to WD
+git stash apply --index		# restore last stash to WD and to index (do not deletes stash)
+git stash drop stash@{0}	# delete stash
+git stash pop				# restore stash and drop it then
+git stash --keep-index		# stash WD and index, not clean index
+
+				hexlet.git.16	OSS - Open source software
+git branch					# show all branches on local repository
+git branch -a				# show all branches on remote repository
+git branch myBranch			# make new branch myBranch
+git branch -d mybranch		# delete myBranch (can`t delete current branch)
+git branch -m myBranchX		# rename current branch to myBranchX
+git branch -f main <hash>	# move main to <hash>
+git branch -vv				# show binding of current branch to remote branch
+git checkout <hash>			# attach HEAD to <hash> commit (from now the HEAD does not follow the branch)
+git checkout myBranch		# attach HEAD to myBranch
+git checkout main			# attach HEAD to main
+git checkout -b myBranch2	# make new branch myBranch2 and switch in
+git merge featureBranch		# merge reatureBranch to reseivingBranch (run this command from reseivingBranch)
+git merge -m 'Comment' featureBranch		# use -m 'Comment' like to every other commit
+git rebase					# rebase current branch (let it be myBranch) changes infront of main line head
+git rebase myBranch			# then the main is current and myBranch is infront of main line head -...
+							# ... rebase head (main) into myBranch
+git rebase -i <hash>		# interactive rebase HEAD into new custom copy of released commits with pick/omit
+	 						# flags (pick - onbord released commits, omit - pass released commit)
+							# also interactive rebase helps change commit order in new commit-way
+git cat-file -t <hash>		# show type of <hash> object
+git cat-file -p <hash>		# show deteling of <hash> object
+
+		Relative Refs				G   H   I   J		A =      = A^0
+git log --graph						 \ /     \ /		B = A^   = A^1     = A~1		
+	# displays history				  D   E   F			C = A^2
+	# in the opposite order			   \  |  / \		D = A^^  = A^1^1   = A~2
+										\ | /   |		E = B^2  = A^^2
+	# ~ - tilde							 \|/    |		F = B^3  = A^^3
+	# ^ - caret							  B     C		G = A^^^ = A^1^1^1 = A~3
+										   \   /		H = D^2  = B^^2    = A^^^2  = A~2^2
+											\ /			I = F^   = B^3^    = A^^3^
+											 A			J = F^2  = B^3^2   = A^^3^2
+
+git cherry-pick <hash1> <hash1> ...		# copy specified commits on HEAD
