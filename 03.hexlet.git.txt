@@ -1,3 +1,9 @@
+# this is 03.hexlet.git.txt
+# use 4-space tab to read
+# source 1: https://ru.hexlet.io/courses/intro_to_git as the initial framework
+# source 2: https://learngitbranching.js.org/?locale=ru_RU&demo= - good exercise equipment about branches
+# source 3: https://www.youtube.com/watch?v=O00FTZDxD0o&ab_channel=BogdanStashchuk - good about base of git
+
 				hexlet.git.01	Introduction
 				hexlet.git.02	Installation and thesettings
 SSH (Safety shell) - it`s not a shell - it`s a safe transport protocol
@@ -38,11 +44,11 @@ git push -u origin main		# bind local current branch to remote main in origin an
 		Make a copy of repository from github.com:
 rm -r hexlet-git			# remove local repository
 git clone <url>				# clone origin to local directory
-git pull --rebase			# synchronises server repository to local
+git pull --rebase			# synchronise local repo from server
 git log						# show git operations log
 
 Bitbucket - an alternative of github
-Git...... - an alternative of github that may be installed to local machine
+GitLab - an alternative of github (also for own servers)
 
 Task: copy git from repos/git-user to repos/git-user, change two files and push them to main git
 git clone repos/git-user code-user
@@ -96,32 +102,32 @@ git restore myFile 			# restores myFile to working directory ((is staged) ? from
 git restore --staged myFile # restores myFile from last commit to staged and cancels indexing of myFile
 
 				hexlet.git.09	Canseling after commits
-git revert <hash>			# makes new commit to HEAD canceling changes of the <hash> commit
-git reset <hash>			# (applicapable only for non pushed commit)
-							# set <hash> to HEAD branch
-							# sends changes of <hash> commit to working directory
-git reset --mixed <hash>	# --mixed - by default
-git reset --hard <hash>		# --hard - set <hash> to HEAD branch and delete all released commits
+git revert <what>			# add to HEAD a new commit canceling changes of the <what> commit
+git reset  <where>			# (applicapable only for non pushed commit)
+							# move HEAD to <where>
+							# and send changes of <where> commit to working directory
+git reset --mixed <where>	# --mixed - by default
+git reset --hard <where>	# --hard - set HEAD to <where> and delete all released commits
 
 				hexlet.git.10	Changing of last commit
 git commit --amend			# (applicapable only for non pushed commit) 
-							# used to add new staged changes to commit or to change comment
-							# under the hood it makes revert, then repeats last commit with the same comment
-git commit --amend --no-edit# adds new staged changes to last non pushed commit without opening comments
+							# add new staged changes to already existed commit or to change comment
+							# (under the hood) makes revert, then repeats last commit with the same comment
+git commit --amend --no-edit# add new staged changes without opening comments
 
 				hexlet.git.11	Index
-git commit myFile			# commits specified files (only if they are tracked)
-git commit -a				# commits all changed tracked files
+git commit <files>			# commit already tracked <files>
+git commit -a				# commit all changed tracked files
 git add .					# marks to track and stages all files in working directory
 git add -i					# (--interactive) flexible staging
-git add -p					# (--patch) helps to stage a part of changes in file
-git reset -p				# helps to cancel a part of previous commit
+git add -p					# (--patch) stage a part of changes in file
+git reset -p				# (--patch) cancel a part of previous commit
 git stash save -p			# makes a stage stash in files changes
 
 				hexlet.git.12	Moving through History
 git log --oneline			# show commits with hashes and comments
 git shortlog				# show commits with authors and comments
-git checkout hashNumber		# switch control into hashNumber time
+git checkout <hash>			# switch HEAD to <hash> commit
 git checkout main			# back control into main branch
 git switch -				# back control into main branch
 git branch					# show all branches
@@ -161,29 +167,35 @@ git stash pop				# restore stash and drop it then
 git stash --keep-index		# stash WD and index, not clean index
 
 				hexlet.git.16	OSS - Open source software
-git branch					# show all branches on local repository
-git branch -a				# show all branches on remote repository
-git branch myBranch			# make new branch myBranch
-git branch -d mybranch		# delete myBranch (can`t delete current branch)
-git branch -m myBranchX		# rename current branch to myBranchX
-git branch -f main <hash>	# move main to <hash>
-git branch -vv				# show binding of current branch to remote branch
-git checkout <hash>			# attach HEAD to <hash> commit (from now the HEAD does not follow the branch)
-git checkout myBranch		# attach HEAD to myBranch
-git checkout main			# attach HEAD to main
-git checkout -b myBranch2	# make new branch myBranch2 and switch in
-git merge featureBranch		# merge reatureBranch to reseivingBranch (run this command from reseivingBranch)
-git merge -m 'Comment' featureBranch		# use -m 'Comment' like to every other commit
-git rebase					# rebase current branch (let it be myBranch) changes infront of main line head
-git rebase myBranch			# then the main is current and myBranch is infront of main line head -...
-							# ... rebase head (main) into myBranch
-git rebase -i <hash>		# interactive rebase HEAD into new custom copy of released commits with pick/omit
+nothing to note
+
+				LearnGitBranching
+git branch						# show all branches on local repository
+git branch -a					# show all branches on remote repository
+git branch    <what>			# make new branch <what> on HEAD
+git branch    <what> <where>	# make new branch <what> on <where>
+git branch -f <what> <where>	# move <what> branch pointer to <there>
+git branch -d <what>			# delete <what> branch (can`t delete current branch)
+git branch -m <what>			# rename current branch to <what>
+git branch -vv					# show binding of current branch to remote branch
+
+git checkout    <what>			# move HEAD to check out <what>
+git checkout -b <what>			# move HEAD to check out (make <what>branch on HEAD)
+git checkout -b <what> <where>	# move HEAD to check out (make <what>branch on <where>)
+
+git merge <what>				# merge <what> branch to HEAD (make new merging commit)
+git merge -m 'Comnt' <what>		# use -m 'Comment' like to every other commit
+
+git rebase    <where>			# rebase current branch to <where> (make copys of all commits)
+git rebase    <where> <what>	# rebase  <what>branch  to <where> and checkout <what>
+git rebase -i <where>		# interactive rebase HEAD into new custom copy of released commits with pick/omit
 	 						# flags (pick - onbord released commits, omit - pass released commit)
 							# also interactive rebase helps change commit order in new commit-way
-git cat-file -t <hash>		# show type of <hash> object
-git cat-file -p <hash>		# show deteling of <hash> object
 
-		Relative Refs				G   H   I   J		A =      = A^0
+git cat-file -t <object>	# show <object> type (blob, tree, commit, tag)
+git cat-file -p <object>	# show <object> deteling
+
+		RELATIVE REFS				G   H   I   J		A =      = A^0
 git log --graph						 \ /     \ /		B = A^   = A^1     = A~1		
 	# displays history				  D   E   F			C = A^2
 	# in the opposite order			   \  |  / \		D = A^^  = A^1^1   = A~2
@@ -194,4 +206,38 @@ git log --graph						 \ /     \ /		B = A^   = A^1     = A~1
 											\ /			I = F^   = B^3^    = A^^3^
 											 A			J = F^2  = B^3^2   = A^^3^2
 
-git cherry-pick <hash1> <hash1> ...		# copy specified commits on HEAD
+git cherry-pick <what1> <what2> ...		# copy specified commits to HEAD
+git tag <what> <where>		# make tag <what> to <where> commit
+							# tag - constant pointer to spesify commit
+git describe <what>			# describe <what>commit by nearest tag:	<tag>_<numCommits>_g<hash>
+
+
+				REMOTE REPO
+origin					# common local pointer to remote repo
+origin/<branch>			# common local pointer to <branch> in origin repo
+						# origin/<branch> accepts hash only from origin repo
+git fetch				# get all remote repo changes to local one
+git pull				# = git fetch + git merge origin/<branch>	# Merge origin/<branch> to local <branch>
+git pull --rebase		# = git fetch + git rebase origin/<branch> 	# Rebase local <branch> to origin/<branch>
+git push				# push current local branch to origin
+						# (work only on matching root of <branch> and origin/<branch>)
+						# git pull   and   git pull --rebase   used to match <branch> and origin/<branch>
+
+git checkout -b <branch> o/main		# make        <branch> following by o/main
+git  branch  -u o/main <branch>		# make        <branch> following by o/main
+git  branch  -u o/main				# make current<branch> following by o/main
+
+git push origin <branch>			# push local <branch>       to origin/<branch>	(HEAD-position independent)
+git push origin <source>:<recipient># push local <source>branch to origin/<recipient>branch		(refspec)
+									# <source> - branch or relative ref or hash
+									# create <recipient>branch in case of absence
+
+git fetch origin <branch>				# fetch origin/<branch> to local <branch>
+git fetch origin <source>:<recipient>	# fetch origin/<source> to local <recipient>branch
+										# create <recipient>branch on HEAD in case of absence
+
+git push origin  :<recipient>		# remove <recipient>pointer in origin
+git fetch origin :<recipient>		# create <recipient>branch on HEAD in case of absence only
+
+git pull origin main				# merge new commits from o/main to local current branch throught local main
+git pull origin main:foo			# merge new commits from o/main to local current branch throught new foo
