@@ -1,0 +1,233 @@
+# this is 03.hexlet.git.txt
+# use 4-space tab to read
+# source 1: https://ru.hexlet.io/courses/intro_to_git as the initial framework
+# source 2: https://learngitbranching.js.org/?locale=ru_RU&demo= - good exercise equipment about branches
+# source 3: https://www.youtube.com/watch?v=O00FTZDxD0o&ab_channel=BogdanStashchuk - good about base of git
+
+Bitbucket - an alternative of github
+GitLab - an alternative of github (also for own servers)
+
+GIT-sheet: https://about.gitlab.com/images/press/git-cheat-sheet.pdf
+Соглашение о коммитах: https://www.conventionalcommits.org/ru/v1.0.0/
+Что такое Git... https://git-scm.com/book/ru/v2/%D0%92%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D0%A7%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-Git%3F
+
+https://learngitbranching.js.org/?locale=ru_RU		# Game about branches
+https://trunkbaseddevelopment.com/					# Trunk Based Development
+
+# $PS1 — Prompt Statement - define the view of prompt statement
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" - install OH MY ZSH with colored PS
+
+---------------- SSH - SAFETY SHELL -------------------------------------------
+
+SSH - safe transport protocol (not a shell)
+Make an SSH connection to github.com:
+1	Make ssh-keys couple in terminal:
+		ssh-keygen -t ed25519  -C "my_email@server.com"	# makes a couple ssh-keys
+		eval "$(ssh-agent -s)"							# runs ssh agent to watch the keys
+		ssh-add ~/.ssh/id_ed25519 						# adds new ssh key to agent
+		cat ~/.ssh/id_ed25519.pub						# copy open key here
+2	Registrate open key on github:
+		open https://github.com/settings/keys					
+		press 'New SSH key' button
+		insert copyed key and come up new key-name
+
+---------------- PAGER CONTROL ------------------------------------------------
+
+	f - forward, b - back, u - up, q - quit, 
+	/<lookingText>, n-next, N-previous
+
+---------------- RELATIVE REFS ------------------------------------------------
+									G   H   I   J		A =      = A^0
+git log --graph						 \ /     \ /		B = A^   = A^1     = A~1		
+	# displays history				  D   E   F			C = A^2
+	# in the opposite order			   \  |  / \		D = A^^  = A^1^1   = A~2
+										\ | /   |		E = B^2  = A^^2
+	# ~ - tilde							 \|/    |		F = B^3  = A^^3
+	# ^ - caret							  B     C		G = A^^^ = A^1^1^1 = A~3
+										   \   /		H = D^2  = B^^2    = A^^^2  = A~2^2
+											\ /			I = F^   = B^3^    = A^^3^
+											 A			J = F^2  = B^3^2   = A^^3^2
+
+---------------- GIT COMMANDS LOFT --------------------------------------------
+
+git init					# create repo from existing local directory
+							# runs in working directory of our new project
+							# it make a repository (in .git directory)
+
+git clone <url>				# clone origin to local directory
+
+git config --global user.email "you@example.com"	# set e-mail for git
+git config --global user.name "User Name"			# set username for git
+git config --list									# show git settings
+
+git remote					# show remote repository to current local one
+git remote -v				# show settings of remote to local repository binding
+git remote add origin <url>	# bind current local repository to remote one
+							# origin - new local name of remote repository
+
+---------------- GIT COMMANDS INFO --------------------------------------------
+
+git status					# show repository status
+							# show all not ignored untracked, indexed, staged files
+
+git shortlog				# show commits with authors and comments
+
+git log						# show commits - from HEAD to the root
+git log -p					# show commits with diffs
+git log --oneline			# show commits - only hashes and comments
+git log -p --oneline myFile	# help to find changes in myFile through commits
+git log --name-status myFile# help to find changes in myFile through commits
+git log --graph				# show commit graph
+
+git blame myFile			# show the entire myFile with each line history
+
+git grep myWord							# show every line in every file containing myWord
+git grep -i myWord						# the same, but not case sensitive
+git grep myWord hashNumber				# the same, but only in hashNumber commite
+git grep myWord $(git rev-list --all)	# shows full commit list with hashNumbers
+
+git show hashNumber			# show diff for hashNumber commit
+
+git diff					# (--cached by default)
+							# show changes in trackable unstaged files
+
+git diff --staged			# show changes in staged files
+
+git cat-file -t <object>	# show <object> type (blob, tree, commit, tag)
+git cat-file -p <object>	# show <object> deteling
+
+git tag <tag> <commit>		# create tag to commit
+							# tag - constant pointer to spesify commit
+git describe <commit>		# describe <commit> by nearest tag:	<tag>_<numCommits>_g<hash>
+
+---------------- GIT COMMANDS FILEWORKING -------------------------------------
+
+git add .					# mark to track and stage all files
+git add myFile				# mark to track and stage myFile
+git add --interactive		# flexible staging
+git add --patch				# stage a part of changes in file
+
+git clean 					# remove all untracked files
+git clean -f				# force
+git clean -ff				# forceforce - useful for some files copied from another git
+git clean -n				# not delete - only show what would be deleted
+git clean -d				# remove also directory
+git clean -x				# remove also ignored files
+git clean -i				# interactive cleaning
+							
+git rm myFile				# = rm myFile + git add myFile
+git rm myFile --cached		# remove myFile from repositore, but not from working directory
+
+git restore myFile 			# restore myFile to WD from staged (if not staged - from last commit)
+git restore --staged myFile # restore myFile from last commit to staged (replase staged myFile)
+
+git commit					# commit (send all staged files to local repo)
+git commit -m 'comment'		# commit with 'comment'
+
+git commit -a				# commit all changed           tracked files, include not staged
+git commit <files>			# commit all changed specified tracked files, include not staged
+
+git commit --amend			# replace last commit with modified one
+							# (applicapable only for non pushed commit) 
+							# useful to add changes to existed commit and to change comment
+git commit --amend --no-edit# add new staged changes without opening comments
+
+git revert <what>			# add to HEAD a new commit canceling changes of the <what>commit
+
+git reset					# primary used to unstage changes
+git reset <where>			# move HEAD to <where>
+git reset --mixed <where>	# by default
+git reset --hard <where>	# move HEAD to <where> and delete all released commits
+							# (applicapable only for non pushed commit)
+git reset -p				# (--patch) cancel a part of previous commit
+
+git stash					# stash tracked and staged files
+git stash --keep-index		# stash tracked and staged files, not clean index
+git stash save -p			# stash only staged files
+git stash -u				# --include-untracked	- also stash untracked files
+git stash -a				# --all					- also stash ignored files
+git stash --patch			# ask to stash for each change
+git stash --list			# show all stashes
+git stash pop				# restore last stash and drop it then
+git stash apply				# restore last stash to WD
+git stash apply --index		# restore last stash to WD and to index (do not deletes stash)
+git stash apply stash@{2}	# restore stash@{2} to WD
+git stash drop stash@{0}	# delete stash@{0}
+
+---------------- GITIGNORE ----------------------------------------------------
+
+.gitignore						# file in hive directory - contains list of all files ignored by git
+	 myFile or  myDirectory		# ignore myFile or myDirectory in every directory
+	/myFile or /myDirectory 	# ignore myFile or myDirectory in specified directory
+	/db/*.sqlite3				# ignore all *.sqlite3 in /db
+	doc/**/*.txt				# ignore all *.txt in /doc and all inner directories
+BIG Gitignore collection		# https://github.com/github/gitignore
+
+---------------- GIT COMMANDS BRANCH-WORKING -------------------------------------
+
+git branch						# show all branches on local repository
+git branch -a					# show all branches on remote repository
+git branch    <what>			# make new branch <what> on HEAD
+git branch    <what> <where>	# make new branch <what> on <where>
+git branch -f <what> <where>	# move <what> branch pointer to <there>
+git branch -d <what>			# delete <what> branch (can`t delete current branch)
+git branch -m <what>			# rename current branch to <what>
+git branch -vv					# show binding of current branch to remote branch
+
+git checkout    <what>			# move HEAD to check out <what>
+git checkout -b <what>			# move HEAD to check out (make <what>branch on HEAD)
+git checkout -b <what> <where>	# move HEAD to check out (make <what>branch on <where>)
+
+git switch -					# move HEAD to main branch
+git switch    myBranch			# move HEAD to myBranch
+git switch -c myBranch			# move HEAD to myBranch (--create it on HEAD)
+
+git merge <what>				# create new commit, merging <what>branch to the HEAD
+git merge -m 'Comnt' <what>		# -//-       + Comment (like with every other commit)
+
+git rebase    <where>			# rebase current branch to <where> (make copy of all commits)
+git rebase    <where> <what>	# rebase  <what>branch  to <where> and checkout <what>
+git rebase -i <where>			# interactive rebase HEAD into new custom copy 
+	 							# of released commits with pick/omit flags
+								# (pick - onbord released commits, omit - pass released commit)
+								# also interactive rebase helps change commit order in new commit-way
+
+git cherry-pick <w1> <w2> ...	# copy specified commits to HEAD (only commits, not branches)
+
+---------------- GIT COMMANDS - REMOTE REPO -----------------------------------
+
+origin				# common local pointer - remote repo
+origin/<branch>		# common local pointer - <branch> in origin repo
+						
+git fetch			# fetch remote repo changes to local one
+
+git pull			# = git fetch + git merge origin/<branch>	# Merge origin/<branch> to current <branch>
+git pull --rebase	# = git fetch + git rebase origin/<branch> 	# Rebase current <branch> to origin/<branch>
+
+git push			# push current local branch to origin
+					# (work only on matching root of <branch> and origin/<branch>)
+					# git pull   and   git pull --rebase   used to match <branch> and origin/<branch>
+
+---------------- GIT COMMANDS - REMOTE REPO - BRANCH-WORKING ------------------
+
+git checkout -b <branch> o/main	# make        <branch> following by o/main
+
+git branch -u o/main <branch>	# make        <branch> following by o/main
+git branch -u o/main			# make current<branch> following by o/main
+
+git push origin <branch>		# push local <branch>       to origin/<branch> (HEAD-position independent)
+git push origin <src>:<rcp>		# push local <source>branch to origin/<recipient>branch		(refspec)
+								# <source> - branch or relative ref or hash
+								# create <recipient>branch in case of absence
+
+git fetch origin <branch>		# fetch origin/<branch> to local <branch>
+git fetch origin <src>:<rcp>	# fetch origin/<source> to local <recipient>branch
+								# create <recipient>branch on HEAD in case of absence
+
+git push origin  :<rcp>			# remove <recipient>pointer in origin
+git fetch origin :<rcp>			# create <recipient>branch on HEAD in case of absence only
+
+git pull origin main			# merge new commits from o/main to local current branch throught local main
+git pull origin main:foo		# merge new commits from o/main to local current branch throught new foo
+
+-------------------------------------------------------------------------------
